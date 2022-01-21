@@ -100,7 +100,7 @@ class LikeView(View):
 
     if not is_like:
       like.delete()
-      return JsonResponse({"MESSAGE":"DELETE"}, status=200)
+      return JsonResponse({"message":"DELETE"}, status=200)
     
     # user = Users.objects.get(user_id = data['user_id'])
     # post = Post.objects.get(post_id = data['post_id'])
@@ -119,6 +119,16 @@ class FollowView(View):
         return JsonResponse({'message': 'INVALID_FOLLOW_USER'}, status=400)
       if not Users.objects.filter(email=data['followed_email']).exists():
         return JsonResponse({'message': 'INVALID_FOLLOWED_USER'}, status=400)
+      
+      follow, is_follow = Follow.objects.get_or_create(
+        follow_user_id = Users.objects.get(email=data['follow_email']).id,
+        followed_user_id = Users.objects.get(email=data['followed_email']).id
+      )
+
+      if not is_follow:
+        follow.delete()
+        return JsonResponse({'message':'DELETE'}, status=200)
+
         
       return JsonResponse({'message': 'SUCCESS'}, status=200)
     except:
