@@ -133,3 +133,16 @@ class FollowView(View):
       
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
+
+class CountView(View):
+  def get(self,request,post_id):
+
+    try:
+      if not Post.objects.filter(id = post_id).exists():
+        return JsonResponse({'message': 'INVALID_POST'}, status=400)
+
+      count = Like.objects.filter(post_id = post_id).count()
+      return JsonResponse({'like_count': count}, status=200)
+    
+    except:
+      return JsonResponse({'message': 'KEY_ERROR'}, status=400)
