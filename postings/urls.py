@@ -1,7 +1,5 @@
 from django.urls import path
 
-from postings.models import Follow
-
 # from postings.models import Commit
 from .views      import PostingView,CommentView,LikeView,FollowView, CountView
 
