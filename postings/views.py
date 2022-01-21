@@ -119,7 +119,7 @@ class FollowView(View):
         return JsonResponse({'message': 'INVALID_FOLLOW_USER'}, status=400)
       if not Users.objects.filter(email=data['followed_email']).exists():
         return JsonResponse({'message': 'INVALID_FOLLOWED_USER'}, status=400)
-      
+    
       follow, is_follow = Follow.objects.get_or_create(
         follow_user_id = Users.objects.get(email=data['follow_email']).id,
         followed_user_id = Users.objects.get(email=data['followed_email']).id
@@ -129,7 +129,7 @@ class FollowView(View):
         follow.delete()
         return JsonResponse({'message':'DELETE'}, status=200)
 
-        
       return JsonResponse({'message': 'SUCCESS'}, status=200)
+      
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
