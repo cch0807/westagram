@@ -140,8 +140,9 @@ class CountView(View):
     try:
       if not Post.objects.filter(id = post_id).exists():
         return JsonResponse({'message': 'INVALID_POST'}, status=400)
-
+        
       count = Like.objects.filter(post_id = post_id).count()
+
       return JsonResponse({'like_count': count}, status=200)
     
     except:
