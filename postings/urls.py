@@ -1,11 +1,15 @@
 from django.urls import path
 
+from postings.models import Follow
+
 # from postings.models import Commit
-from .views      import PostingView,CommitView
+from .views      import PostingView,CommentView,LikeView,FollowView
 
 urlpatterns = {
   path('posting', PostingView.as_view()),
-  path('commit/<int:post_id>', CommitView.as_view()),
+  path('comment/<int:post_id>', CommentView.as_view()),
+  path('like', LikeView.as_view()),
+  path('follow', FollowView.as_view()),
 
   # 127.0.0.1:8000/commit/1
 }

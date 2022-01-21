@@ -10,7 +10,7 @@ class Post(models.Model):
   class Meta:
     db_table= 'posts'
 
-class Commit(models.Model):
+class Comment(models.Model):
   user = models.ForeignKey('users.Users', on_delete=models.CASCADE, related_name='comments')
   post= models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
   create_at = models.DateTimeField(auto_now_add=True)
@@ -18,3 +18,17 @@ class Commit(models.Model):
 
   class Meta:
     db_table = 'comments'
+
+class Like(models.Model):
+  user= models.ForeignKey('users.Users', on_delete= models.CASCADE, related_name='likes')
+  post= models.ForeignKey('Post', on_delete=models.CASCADE, related_name='likes')
+
+  class Meta:
+    db_table = 'likes'
+
+class Follow(models.Model):
+  follow_user= models.ForeignKey('users.Users', on_delete=models.CASCADE, related_name='follows')
+  followed_user= models.ForeignKey('users.Users', on_delete=models.CASCADE, related_name='followed')
+
+  class Meta:
+    db_table = 'follows'
