@@ -121,8 +121,8 @@ class FollowView(View):
         return JsonResponse({'message': 'INVALID_FOLLOWED_USER'}, status=400)
       
       follow, is_follow = Follow.objects.get_or_create(
-        follow_id = Users.objects.get(email=data['follow_email']).id,
-        followed_id = Users.objects.get(email=data['followed_email']).id
+        follow_user_id = Users.objects.get(email=data['follow_email']).id,
+        followed_user_id = Users.objects.get(email=data['followed_email']).id
       )
 
       if not is_follow:
