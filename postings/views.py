@@ -82,7 +82,7 @@ class CommentView(View):
       return JsonResponse({'result':result}, status=200)
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
-
+      
 class LikeView(View):
   def post (self,request):
     data = json.loads(request.body)
