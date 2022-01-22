@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'users',
     'django_extensions',
     'postings',
-    'search',
 ]
 
 MIDDLEWARE = [
