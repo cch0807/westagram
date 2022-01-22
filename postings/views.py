@@ -58,7 +58,7 @@ class CommentView(View):
       Comment.objects.create(
         user = Users.objects.get(email = data['email']),
         post_id = data['post_id'],
-        comment = data['comment']
+        comment = data['comment'],
       )
       return JsonResponse({'message': 'SUCCESS'}, status=200)
 
