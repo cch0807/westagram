@@ -19,5 +19,4 @@ from django.urls import path,include
 urlpatterns = [
     path('', include('users.urls')),
     path('', include('postings.urls')),
-    path('', include('search.urls')),
 ]

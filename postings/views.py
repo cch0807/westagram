@@ -1,8 +1,10 @@
+from curses import keyname
 import json, bcrypt, jwt
 
 from django.http            import JsonResponse
 from django.views           import View
 from django.core.exceptions import ValidationError 
+from django.db.models       import Q
 
 from users.models           import Users
 from postings.models        import Post, Comment, Like, Follow
@@ -31,13 +33,14 @@ class PostingView(View):
       
       for ps in post:
         result.append({
+          'id': ps.id,
           "name": ps.user.name,
           "image": ps.image,
           "post": ps.post,
           "time": ps.create_at,
         })
 
-      return JsonResponse({'message': result}, status=200)
+      return JsonResponse({'result': result}, status=200)
 
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
@@ -74,9 +77,10 @@ class CommentView(View):
       for comment in comments:
         result.append(
           {
-            "user_id": comment.user.name,
+            'id': comment.id,
+            "name": comment.user.name,
             "comment": comment.comment,
-            "time":    comment.create_at
+            "time":  comment.create_at
           }
         )
       return JsonResponse({'result':result}, status=200)
@@ -147,3 +151,77 @@ class CountView(View):
     
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
+
+class SearchView(View):
+  def post(self,request):
+    try:
+      data = json.loads(request.body)
+      # users = Users.objects.all()
+      key = data['search']
+      name_q = Q(name__contains = key)
+      result = []
+      users = Users.objects.filter(name_q)
+      for user in users:
+        result.append(user.name)
+
+      return JsonResponse({'result': result}, status=200)
+
+    except:
+      return JsonResponse({'message': 'KEY_ERROR'}, status = 400)
+
+
+class MainView(View):
+  def get(self, request):
+    try:
+      user_list= []
+      post_list = []
+      comment_list = []
+      like_list = []
+      follow_list = []
+
+      users = Users.objects.all()
+      posts = Post.objects.all()
+      comments = Comment.objects.all()
+      likes = Like.objects.all()
+      follows = Follow.objects.all()
+
+      for user in users:
+        user_list.append({
+          'id':user.id,
+          'name':user.name
+          })
+
+      for post in posts:
+        post_list.append({
+          'id': post.id,
+          'image': post.image,
+          'post': post.post
+        })
+      for comment in comments:
+        comment_list.append({
+          'id': comment.id,
+          "name": comment.user.name,
+          "comment": comment.comment,
+          "time":  comment.create_at
+        })
+      
+      for like in likes:
+        like_list.append({
+          'like_id' :like.id,
+          'user_id' :like.user.id,
+          'post_id' :like.post.id,
+        })
+
+      # for follow in follows:
+      #   follow_list.append({
+
+      #   })
+      
+
+      
+
+      return JsonResponse({'user': user_list, 'post': post_list ,'comment': comment_list, 'like': like_list})
+
+    except:
+
+      return JsonResponse({'message': 'KEY_ERROR'})
