@@ -30,13 +30,15 @@ class PostingView(View):
     try:
       result = []
       post = Post.objects.all()
-      
+      like = Like.objects.all()
       for ps in post:
         result.append({
+          # id, name , image, post, like_count, time
           'id': ps.id,
           "name": ps.user.name,
           "image": ps.image,
           "post": ps.post,
+          'like_count': like.filter(post_id = ps.id).count(),
           "time": ps.create_at,
         })
 
@@ -71,13 +73,14 @@ class CommentView(View):
       # data = json.loads(request.body)
       # user = Commit.objects.get(user_id = data['user_id'])
    
-      comments = Comment.objects.filter(post_id= post_id)
+      comments = Comment.objects.filter(post_id = post_id)
       result = []
 
       for comment in comments:
         result.append(
           {
             'id': comment.id,
+            # 'post_id': comment.post.id,
             "name": comment.user.name,
             "comment": comment.comment,
             "time":  comment.create_at
@@ -86,7 +89,7 @@ class CommentView(View):
       return JsonResponse({'result':result}, status=200)
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
-      
+  
 class LikeView(View):
   def post (self,request):
     data = json.loads(request.body)
@@ -111,6 +114,7 @@ class LikeView(View):
 
     try:
       return JsonResponse({'message': 'SUCCESS'}, status=200)
+      
     except:
       return JsonResponse({'message': 'KEY_ERROR'}, status=400)
 
@@ -158,7 +162,7 @@ class SearchView(View):
       data = json.loads(request.body)
       # users = Users.objects.all()
       key = data['search']
-      name_q = Q(name__contains = key)
+      name_q = Q(name__icontains = key)
       result = []
       users = Users.objects.filter(name_q)
       for user in users:
@@ -195,8 +199,10 @@ class MainView(View):
         post_list.append({
           'id': post.id,
           'image': post.image,
-          'post': post.post
+          'post': post.post,
+          'like_count': likes.filter(post_id = post.id).count()
         })
+
       for comment in comments:
         comment_list.append({
           'id': comment.id,
@@ -212,15 +218,15 @@ class MainView(View):
           'post_id' :like.post.id,
         })
 
-      # for follow in follows:
-      #   follow_list.append({
+      for follow in follows:
+        follow_list.append({
+          'follow_id' : follow.follow_user.id,
+          'follow_name' : follow.follow_user.name,
+          'followed_id' : follow.followed_user.id,
+          'followed_name' : follow.followed_user.name
+        })
 
-      #   })
-      
-
-      
-
-      return JsonResponse({'user': user_list, 'post': post_list ,'comment': comment_list, 'like': like_list})
+      return JsonResponse({'user': user_list, 'post': post_list ,'comment': comment_list, 'like': like_list, 'follow': follow_list})
 
     except:
 
